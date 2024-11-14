@@ -46,18 +46,20 @@ try {
 		$data = json_decode($data_fix);
 		
 		if (isset($data->elements[1]->email)) {
-			echo 'Email: ' . $data->elements[1]->email;
-            
+			//echo 'Email: ' . $data->elements[1]->email;
+			$email =  $data->elements[1]->email;
             $user_id = user_get_id_by_email($email);
             if ($user_id !== false) {
                 auth_attempt_script_login(user_get_field($user_id, 'username'));
                 print_header_redirect(config_get('default_home_page'));
             } else {
-                echo "Usuário não encontrado. Entre em contato com o administrador.";
+                echo "Usuário do email: " . $email . "não encontrado no MantisBT. Entre em contato com o administrador.";
             }
 
 		} else {
 			echo 'Email não encontrado no payload azure';
+			echo "\n";
+			echo $data;
 		}
 	} else {
 		echo 'Formato JSON inválido.';
