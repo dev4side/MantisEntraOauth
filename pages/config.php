@@ -16,7 +16,7 @@ print_manage_menu();
             Get Instructions from <a target="_blank" rel="noopener" href="https://github.com/ugleiton/MantisAzureOauth">https://github.com/ugleiton/MantisAzureOauth</a>
         </li>
         <li>Use the following redirect URL in Azure<br>
-            <code><?php echo substr(config_get('path'), 0, -1).plugin_page('callback'); ?></code>
+            <code><?php echo substr(config_get('path'), 0, -1).plugin_page('redirect'); ?></code>
         </li>
 
         <form action="<?php echo plugin_page('config_update') ?>" method="post">
