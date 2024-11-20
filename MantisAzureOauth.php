@@ -55,6 +55,27 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 
 		return '
 			<meta name="azureauthuri" content="' . substr(config_get('path'), 0, -1).plugin_page('auth') . '" />
+			<meta name="microsoftlogo" content="' . plugin_file("azure_signin.png") . '" />
+			<style> 
+			.btn-microsoft { 
+				background-color: #303030; 
+				color: white; 
+				padding: 10px 27px; 
+				border: none; 
+				border-radius: 5px; 
+				font-size: 14px; 
+				cursor: pointer; 
+				text-align: center; 
+				display: inline-block; 
+				text-decoration: none; 
+			} 
+			.btn-microsoft i { 
+				margin-right: 8px; 
+			} 
+			.btn-microsoft:hover { 
+				background-color: #005a9e; 
+			} 
+			</style> 
 			<script type="text/javascript" src="'.plugin_file("plugin.js").'"></script>
 		';
 
