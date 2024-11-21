@@ -5,4 +5,5 @@ $s_plugin_MantisAzureOauth_title = 'Mantis Azure OAuth Plugin';
 $s_plugin_MantisAzureOauth_tenantId = 'Directory (tenant) ID';
 $s_plugin_MantisAzureOauth_clientId = 'Application (client) ID';
 $s_plugin_MantisAzureOauth_clientSecret = 'Client Secret';
+$s_plugin_MantisAzureOauth_allowedUsersStandardLogin = 'Usuarios permitidos no login padrão';
 $s_plugin_MantisAzureOauth_save = 'Save';

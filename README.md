@@ -72,6 +72,28 @@ https://${seu_url_mantis}/plugin.php?page=MantisAzureOauth/redirect
    - Após instalado, clique no nome do plugin (**Azure SSO Authentication Module 1.0**) para configurá-lo.
    - Preencha os campos com as informações
 
+6. **Bloquear acesso padrão**
+   - Caso queira impedir o login pelo método padrão, preecha o campo `Usuarios permitidos no login padrão` nas configurações com os momes de usuários separados por virgula, somente esses usuários poderão fazer login fora do SSO. 
+   - Ajuste manualmente o arquivo `core/authentication_api.php` ajustando ã função `auth_attempt_login` no seguinte formato:
+   ```php
+      function auth_attempt_login( $p_username, $p_password, $p_perm_login = false ) {
+
+         // Customização UGLEITON - Validar se o usuário pode fazer login padrao
+         $t_basename = 'MantisAzureOauth';
+         $allowed_users = config_get('plugin_' . $t_basename . '_allowedUsersStandardLogin', '');
+         // Verifica se o login é padrão e a lista não está vazia
+         if ( !empty( $allowed_users ) ) {
+            $allowed_users_array = array_map( 'trim', explode( ',', $allowed_users ) );
+            // Verifica se o usuário está na lista de permitidos
+            if ( !in_array( $p_username, $allowed_users_array ) ) {
+                  // Impede o login se o usuário não for permitido
+               return false;
+            }
+         }
+      // CONTINUAÇÃO DO CODIGO PADRÃO....
+
+   ```
+
 
 ## Processo de Login
 

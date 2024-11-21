@@ -1,8 +1,9 @@
 <?php
 
-$s_plugin_azureoauth_title = 'Paramètres Google Oauth';
-$s_plugin_azureoauth_save = 'Enregistrer';
+$s_plugin_MantisAzureOauth_title = 'Mantis Azure OAuth Plugin';
 
-$s_plugin_azureoauth_login = 'Se connecter avec Google';
-$s_plugin_AdminSetPassword_password_length = 'Entrez un mot de passe avec au moins 6 caractères.';
-$s_plugin_AdminSetPassword_password_success = 'Le nouveau mot de passe a été défini avec succès.';
+$s_plugin_MantisAzureOauth_tenantId = 'Directory (tenant) ID';
+$s_plugin_MantisAzureOauth_clientId = 'Application (client) ID';
+$s_plugin_MantisAzureOauth_clientSecret = 'Client Secret';
+$s_plugin_MantisAzureOauth_allowedUsersStandardLogin = 'Usuarios permitidos no login padrão';
+$s_plugin_MantisAzureOauth_save = 'Save';

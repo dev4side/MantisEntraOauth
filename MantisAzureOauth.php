@@ -28,6 +28,7 @@ class MantisAzureOauthPlugin extends MantisPlugin {
             'clientId' => '',
             'clientSecret' => '',
             'redirectUri' => '',
+			'allowedUsersStandardLogin' => 'Administrador',
         );
     }
 	function init() {
@@ -55,11 +56,11 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 
 		return '
 			<meta name="azureauthuri" content="' . substr(config_get('path'), 0, -1).plugin_page('auth') . '" />
-			<meta name="microsoftlogo" content="' . plugin_file("azure_signin.png") . '" />
+			<meta name="microsoftlogo" content="' . plugin_file("microsoft-logo.png") . '" />
 			<style> 
 			.btn-microsoft { 
-				background-color: #303030; 
-				color: white; 
+				background-color: #fff; 
+				color: #000; 
 				padding: 10px 27px; 
 				border: none; 
 				border-radius: 5px; 
@@ -73,7 +74,7 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 				margin-right: 8px; 
 			} 
 			.btn-microsoft:hover { 
-				background-color: #005a9e; 
+				background-color: #cdcdcd; 
 			} 
 			</style> 
 			<script type="text/javascript" src="'.plugin_file("plugin.js").'"></script>
