@@ -38,6 +38,10 @@ print_manage_menu();
                     <td class="category col-sm-3 control-label label-info label-white"><?php echo plugin_lang_get('allowedUsersStandardLogin') ?></td>
                     <td><input type="text" class="form-control" name="prefAllowedUsersStandardLogin" value="<?php echo plugin_config_get('allowedUsersStandardLogin') ?>"></td>
                 </tr>
+                <tr>
+                    <td class="category col-sm-3 control-label label-info label-white"><?php echo plugin_lang_get('blockedDomainsStandardLogin') ?></td>
+                    <td><input type="text" class="form-control" name="prefBlockedDomainsStandardLogin" value="<?php echo plugin_config_get('blockedDomainsStandardLogin') ?>"></td>
+                </tr>
                 <!--
                 <tr>
                     <td class="category"><?php //echo plugin_lang_get('redirectUri') ?></td>

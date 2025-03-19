@@ -28,7 +28,8 @@ class MantisAzureOauthPlugin extends MantisPlugin {
             'clientId' => '',
             'clientSecret' => '',
             'redirectUri' => '',
-			'allowedUsersStandardLogin' => 'Administrador',
+			'allowedUsersStandardLogin' => 'Administrator',
+			'blockedDomainsStandardLogin' => ''
         );
     }
 	function init() {
@@ -43,9 +44,43 @@ class MantisAzureOauthPlugin extends MantisPlugin {
     function hooks() {
         return array(
             "EVENT_LAYOUT_RESOURCES" => "add_azure_login_button"
-            //"EVENT_AUTH_USER_FLAGS" => "check_authentication",
+            "EVENT_AUTH_USER_FLAGS" => "check_authentication",
         );
     }
+
+	function check_authentication( $p_event, $p_user_id ) {
+		    // Get list of users allowed to use standard login
+			$allowed_users = plugin_config_get('allowedUsersStandardLogin', '');
+			$blocked_domains = plugin_config_get('blockedDomainsStandardLogin', ''); 
+			
+			$allowed_users_array = array_map('trim', explode(',', $allowed_users));
+			$blocked_domains_array = array_map('trim', explode(',', $blocked_domains));
+			
+			// Default flags
+			$t_flags = array(
+				'can_use_standard_login' => true
+			);
+			
+			// Check if user is from a blocked domain
+			$domain = '';
+			if (strpos($p_username, '@') !== false) {
+				list($user, $domain) = explode('@', $p_username);
+				
+				// If user's domain is in the blocked list, disable standard login
+				if (in_array(strtolower($domain), $blocked_domains)) {
+					$t_flags['can_use_standard_login'] = false;
+					$t_flags['password_managed_elsewhere_message'] = plugin_lang_get('passwordManagedElsewhereMessage');
+					return $t_flags;
+				}
+			}
+			
+			// If we have restrictions and user is not on allowed list, block standard login
+			if (!empty($allowed_users) && !in_array($p_username, $allowed_users_array)) {
+				$t_flags['can_use_standard_login'] = false;
+			}
+			
+			return $t_flags;
+	}
 
     // Adiciona o botão de login com Azure no menu principal
     function add_azure_login_button() {
@@ -57,6 +92,7 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 		return '
 			<meta name="azureauthuri" content="' . substr(config_get('path'), 0, -1).plugin_page('auth') . '" />
 			<meta name="microsoftlogo" content="' . plugin_file("microsoft-logo.png") . '" />
+			<meta name="microsoftlogintext" content="' . plugin_lang_get('microsoftLoginText') . '" />
 			<style> 
 			.btn-microsoft { 
 				background-color: #fff; 

@@ -13,7 +13,7 @@ if(substr($redirecturi, -1) == '/') $redirecturi = rtrim($redirecturi,'/');
 plugin_config_set('redirectUri', $redirecturi.plugin_page( 'redirect'));
 
 plugin_config_set('allowedUsersStandardLogin', strip_tags(gpc_get_string('prefAllowedUsersStandardLogin')));
-
+plugin_config_set('blockedDomainsStandardLogin', strip_tags(gpc_get_string('prefBlockedDomainsStandardLogin')));
 
 form_security_purge( 'plugin_azureoauth_config_update' );
 print_successful_redirect( plugin_page( 'config', true ) );
