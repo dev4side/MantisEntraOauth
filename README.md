@@ -1,113 +1,113 @@
 # MantisBT Azure SSO Authentication Plugin
 
-Este plugin permite a autenticação de usuários no MantisBT usando o Microsoft Azure Active Directory (Azure AD) como provedor de identidade. Com ele, os usuários podem fazer login usando suas credenciais do Azure AD.
+This plugin allows user authentication in MantisBT using Microsoft Azure Active Directory (Azure AD) as the identity provider. With it, users can log in using their Azure AD credentials.
 
+## Requirements
 
-## Requisitos
+* PHP: Version 7.0 or higher.
+  * openssl and curl PHP extensions enabled in php.ini
+* MantisBT: Installed and working correctly.
+* Azure AD Registration: A registered application in the Azure portal to integrate authentication.
 
-* PHP: Versão 7.0 ou superior.
-* MantisBT: Instalado e funcionando corretamente.
-* Registro no Azure AD: Um aplicativo registrado no portal do Azure para integrar a autenticação.
+## Azure Registration
 
-## Registro na Azure
+An Application registration in Azure is required to enable this plugin.
 
-É necessário um registro de Aplicativo no Azure para habilitar este plugin.
-
-* Acesse o Portal do Azure > Azure Active Directory > Registros de Aplicativos > Novo Registro
+* Go to Azure Portal > Azure Active Directory > App Registrations > New Registration
 ```
-Nome: mantisbt-app
-Tipos de conta compatíveis: Locatário único
-URI de redirecionamento: https://${seu_url_mantis}/plugin.php?page=MantisAzureOauth/redirect
+Name: mantisbt-app
+Supported account types: Single tenant
+Redirect URI: https://${your_mantis_url}/plugin.php?page=MantisAzureOauth/redirect  
 ```
-* `Registrar`
-* No aplicativo recém-criado `mantisbt-app`, vá para `Certificados e segredos`
-* Na guia `Segredos do cliente`, clique em `Novo segredo do cliente`
+* Click `Register`
+* In the newly created `mantisbt-app` application, go to `Certificates & secrets`
+* On the `Client secrets` tab, click `New client secret`
 ```
-Descrição: mantisbt-app-secret
-Expiração: 730 dias (24 meses)
-```
-
-* Anote o `Valor` do segredo gerado, pois essa será a única vez que ele será exibido. Este é o `Client Secret`.
-* Vá para `Permissões de API`
-* `Adicionar uma permissão`
-```
-Microsoft Graph - Permissões de Aplicativo - Group.Read.All
-```
-* Clique em `Conceder consentimento de administrador para Diretório Padrão` e confirme
-* Vá para `Autenticação` e confirme que o campo `Web - URIs de Redirecionamento` tem uma entrada:
-```
-https://${seu_url_mantis}/plugin.php?page=MantisAzureOauth/redirect
+Description: mantisbt-app-secret
+Expiration: 730 days (24 months)
 ```
 
-* Obtenha as três informações abaixo para autenticar o plugin no Redmine:
-  * ID do Locatário: `ID do Diretório (locatário)` na aba `Visão Geral` do aplicativo
-  * ID do Cliente: `ID do Aplicativo (cliente)` na aba `Visão Geral` do aplicativo
-  * Segredo do Cliente: `Client Secret` gerado anteriormente
+* Take note of the `Value` of the generated secret, as this will be the only time it's displayed. This is the `Client Secret`.
+* Go to `API permissions`
+* Click `Add a permission`
+```
+Microsoft Graph - Application permissions - Group.Read.All
+```
+* Click `Grant admin consent for Default Directory` and confirm
+* Go to `Authentication` and confirm that the `Web - Redirect URIs` field has an entry:
+```
+https://${your_mantis_url}/plugin.php?page=MantisAzureOauth/redirect
+```
+
+* Obtain the three pieces of information below to authenticate the plugin in Redmine:
+  * Tenant ID: `Directory (tenant) ID` on the `Overview` tab of the application
+  * Client ID: `Application (client) ID` on the `Overview` tab of the application
+  * Client Secret: The `Client Secret` generated earlier
 
 
-## Instalação e Configuração no MantisBT
+## Installation and Configuration in MantisBT
 
-1. **Baixe o plugin**:
-   - Faça o download ou clone o repositório:  
+1. **Download the plugin**:
+   - Download or clone the repository:  
      ```bash
      git clone https://github.com/ugleiton/MantisAzureOauth.git
      ```
 
-2. **Copie os arquivos**:
-   - Copie o diretório `MantisAzureOauth` para o diretório `plugins` do MantisBT.
+2. **Copy the files**:
+   - Copy the `MantisAzureOauth` directory to the `plugins` directory of MantisBT.
 
-3. **Instale as dependências**:
-   - Acesse o diretório `plugins/MantisAzureOauth/pages/assets/lib/OpenID-Connect-PHP` e execute:
+3. **Install dependencies**:
+   - Access the directory `plugins/MantisAzureOauth/pages/assets/lib/OpenID-Connect-PHP` and run:
      ```bash
      composer install
      ```
 
-4. **Ative o plugin**:
-   - Abra o MantisBT no navegador.
-   - Faça login como administrador.
-   - Acesse **Gerenciar** > **Gerenciar Plugins**.
-   - Localize o plugin **Azure SSO Authentication Module 1.0** na lista e clique em **Instalar**.
+4. **Activate the plugin**:
+   - Open MantisBT in your browser.
+   - Log in as an administrator. 
+   - Go to **Manage** > **Manage Plugins**.
+   - Find the **Azure SSO Authentication Module 1.0** plugin in the list and click **Install**.
 
-5. **Configure o plugin**:
-   - Após instalado, clique no nome do plugin (**Azure SSO Authentication Module 1.0**) para configurá-lo.
-   - Preencha os campos com as informações
+5. **Configure the plugin**:
+   - After installation, click on the plugin name (**Azure SSO Authentication Module 1.0**) to configure it.
+   - Fill in the fields with the information 
 
-6. **Bloquear acesso padrão**
-   - Caso queira impedir o login pelo método padrão, preecha o campo `Usuarios permitidos no login padrão` nas configurações com os momes de usuários separados por virgula, somente esses usuários poderão fazer login fora do SSO. 
-   - Ajuste manualmente o arquivo `core/authentication_api.php` ajustando ã função `auth_attempt_login` no seguinte formato:
+6. **Block default access**
+   - If you want to prevent login using the default method, fill in the field `Users allowed on standard login` in the settings with the user names separated by comma, only these users will be able to log in outside of SSO.
+   - Manually adjust the file `core/authentication_api.php` adjusting the `auth_attempt_login` function in the following format:
    ```php
       function auth_attempt_login( $p_username, $p_password, $p_perm_login = false ) {
 
-         // Customização UGLEITON - Validar se o usuário pode fazer login padrao
+         // Customization UGLEITON - Validate if the user can do standard login 
          $t_basename = 'MantisAzureOauth';
          $allowed_users = config_get('plugin_' . $t_basename . '_allowedUsersStandardLogin', '');
-         // Verifica se o login é padrão e a lista não está vazia
+         // Check if it's standard login and the list is not empty
          if ( !empty( $allowed_users ) ) {
-            $allowed_users_array = array_map( 'trim', explode( ',', $allowed_users ) );
-            // Verifica se o usuário está na lista de permitidos
+            $allowed_users_array = array_map( 'trim', explode( ',', $allowed_users ) ); 
+            // Check if the user is in the allowed list
             if ( !in_array( $p_username, $allowed_users_array ) ) {
-                  // Impede o login se o usuário não for permitido
+                  // Prevents login if the user is not allowed
                return false;
             }
          }
-      // CONTINUAÇÃO DO CODIGO PADRÃO....
+      // CONTINUATION OF STANDARD CODE....
 
-   ```
+   ``` 
 
 
-## Processo de Login
+## Login Process
 
-Quando um usuário acessa a página de login e clica em `Microsoft Login`, o plugin o redireciona para a página de login do Azure, onde ele deve se autenticar. Após o login bem-sucedido, o usuário será redirecionado de volta para o MantisBT.
+When a user accesses the login page and clicks on `Microsoft Login`, the plugin redirects them to the Azure login page, where they must authenticate. After successful login, the user will be redirected back to MantisBT.
 
-### Nota:
+### Note:
 
-Se o registro automático de usuários não estiver ativado, o administrador precisará criar contas manualmente para novos usuários.
+If automatic user registration is not enabled, the administrator will need to manually create accounts for new users.
 
-## Créditos e Referências
+## Credits and References
 
-Este plugin foi desenvolvido com base em ideias e implementações de outros projetos de integração de autenticação no MantisBT. Em especial, foram utilizados como referência:
+This plugin was developed based on ideas and implementations from other authentication integration projects in MantisBT. In particular, the following were used as references:
 
-- [MantisOIDC](https://github.com/FSD-Christian-ADM/MantisOIDC)  
-- [GoogleOauth Plugin para MantisBT](https://github.com/mantisbt-plugins/GoogleOauth)
+- [MantisOIDC](https://github.com/FSD-Christian-ADM/MantisOIDC)
+- [GoogleOauth Plugin for MantisBT](https://github.com/mantisbt-plugins/GoogleOauth) 
 
-Agradeço aos desenvolvedores destes projetos por compartilharem suas soluções com a comunidade.
+I thank the developers of these projects for sharing their solutions with the community.
