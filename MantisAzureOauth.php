@@ -43,8 +43,8 @@ class MantisAzureOauthPlugin extends MantisPlugin {
     // Hook para adicionar o botão de login ao menu principal do MantisBT
     function hooks() {
         return array(
-            "EVENT_LAYOUT_RESOURCES" => "add_azure_login_button"
-            "EVENT_AUTH_USER_FLAGS" => "check_authentication",
+            'EVENT_LAYOUT_RESOURCES' => 'add_azure_login_button',
+            'EVENT_AUTH_USER_FLAGS' => 'check_authentication',
         );
     }
 
