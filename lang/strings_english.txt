@@ -9,6 +9,6 @@ $s_plugin_MantisAzureOauth_allowedUsersStandardLogin = 'Allow users to login wit
 $s_plugin_MantisAzureOauth_blockedDomainsStandardLogin = 'Block domains from logging with local accounts';
 $s_plugin_MantisAzureOauth_save = 'Save';
 
-$s_plugin_MantisAzureOauth_passwordManagedElsewhereMessage = 'You cannot manage a password for a Microsoft account';
+$s_plugin_MantisAzureOauth_passwordManagedElsewhereMessage = 'You cannot manage a password for an external account';
 
 $s_plugin_MantisAzureOauth_microsoftLoginText = 'Login with Microsoft';

@@ -29,7 +29,7 @@ class MantisAzureOauthPlugin extends MantisPlugin {
             'clientSecret' => '',
             'redirectUri' => '',
 			'allowedUsersStandardLogin' => 'Administrator',
-			'blockedDomainsStandardLogin' => ''
+			'blockedDomainsStandardLogin' => '',
         );
     }
 	function init() {
@@ -48,7 +48,10 @@ class MantisAzureOauthPlugin extends MantisPlugin {
         );
     }
 
-	function check_authentication( $p_event, $p_user_id ) {
+	function check_authentication( $p_event, $p_args ) {
+
+			$p_username = $p_args['username'];
+
 		    // Get list of users allowed to use standard login
 			$allowed_users = plugin_config_get('allowedUsersStandardLogin', '');
 			$blocked_domains = plugin_config_get('blockedDomainsStandardLogin', ''); 
@@ -56,27 +59,31 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 			$allowed_users_array = array_map('trim', explode(',', $allowed_users));
 			$blocked_domains_array = array_map('trim', explode(',', $blocked_domains));
 			
-			// Default flags
-			$t_flags = array(
-				'can_use_standard_login' => true
-			);
-			
+			$t_flags = new AuthFlags();
 			// Check if user is from a blocked domain
 			$domain = '';
 			if (strpos($p_username, '@') !== false) {
 				list($user, $domain) = explode('@', $p_username);
 				
 				// If user's domain is in the blocked list, disable standard login
-				if (in_array(strtolower($domain), $blocked_domains)) {
-					$t_flags['can_use_standard_login'] = false;
-					$t_flags['password_managed_elsewhere_message'] = plugin_lang_get('passwordManagedElsewhereMessage');
+				if (in_array(strtolower($domain), $blocked_domains_array)) {
+					$t_flags->setCanUseStandardLogin( false );
+					$t_flags->setPasswordManagedExternallyMessage( plugin_lang_get('passwordManagedElsewhereMessage') );
+
+					# No long term session for identity provider to be able to kick users out.
+					$t_flags->setPermSessionEnabled( false );
+
+					# Enable re-authentication and use more aggressive timeout.
+					$t_flags->setReauthenticationEnabled( true );
+					$t_flags->setReauthenticationLifetime( 10 );
 					return $t_flags;
 				}
 			}
 			
 			// If we have restrictions and user is not on allowed list, block standard login
+			// TODO: might accidentally block all users except from IdP 
 			if (!empty($allowed_users) && !in_array($p_username, $allowed_users_array)) {
-				$t_flags['can_use_standard_login'] = false;
+				$t_flags->setCanUseStandardLogin( false );
 			}
 			
 			return $t_flags;

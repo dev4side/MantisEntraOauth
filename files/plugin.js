@@ -4,7 +4,7 @@ $(document).ready(function () {
     var microsoftlogintext = $("meta[name='microsoftlogintext']").attr('content');
     var html = '<div id="plugin_mantisazureoauth" class="pull-right">\
         <br>\
-        <a href="' + azureauthuri + '" class="btn-microsoft" ><img src="' + microsoftlogo + '" width="20" height="20">' + microsoftlogintext + '</a>\
+        <a href="' + azureauthuri + '" class="btn-microsoft" ><img src="' + microsoftlogo + '" width="20" height="20"> ' + microsoftlogintext + '</a>\
         </div>\
         <br>\
         <br>\
