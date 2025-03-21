@@ -1,6 +1,6 @@
 <?php
 
-form_security_validate( 'plugin_MantisAzureOauth_config_update' );
+form_security_validate( 'plugin_MantisEntraOauth_config_update' );
 auth_reauthenticate( );
 access_ensure_global_level( config_get( 'manage_plugin_threshold' ) );
 
@@ -12,7 +12,7 @@ $redirecturi = config_get('path');
 if(substr($redirecturi, -1) == '/') $redirecturi = rtrim($redirecturi,'/');
 plugin_config_set('redirectUri', $redirecturi.plugin_page( 'redirect'));
 
-plugin_config_set('allowedUsersStandardLogin', strip_tags(gpc_get_string('prefAllowedUsersStandardLogin')));
+plugin_config_set('blockedUsersStandardLogin', strip_tags(gpc_get_string('prefBlockedUsersStandardLogin')));
 plugin_config_set('blockedDomainsStandardLogin', strip_tags(gpc_get_string('prefBlockedDomainsStandardLogin')));
 
 form_security_purge( 'plugin_azureoauth_config_update' );

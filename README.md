@@ -80,7 +80,7 @@ https://${your_mantis_url}/plugin.php?page=MantisAzureOauth/redirect
 
          // Customization UGLEITON - Validate if the user can do standard login 
          $t_basename = 'MantisAzureOauth';
-         $allowed_users = config_get('plugin_' . $t_basename . '_allowedUsersStandardLogin', '');
+         $allowed_users = config_get('plugin_' . $t_basename . '_BlockedUsersStandardLogin', '');
          // Check if it's standard login and the list is not empty
          if ( !empty( $allowed_users ) ) {
             $allowed_users_array = array_map( 'trim', explode( ',', $allowed_users ) ); 

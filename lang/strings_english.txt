@@ -5,8 +5,8 @@ $s_plugin_MantisAzureOauth_title = 'Mantis Azure OAuth Plugin';
 $s_plugin_MantisAzureOauth_tenantId = 'Directory (tenant) ID';
 $s_plugin_MantisAzureOauth_clientId = 'Application (client) ID';
 $s_plugin_MantisAzureOauth_clientSecret = 'Client Secret';
-$s_plugin_MantisAzureOauth_allowedUsersStandardLogin = 'Allow users to login with local accounts';
-$s_plugin_MantisAzureOauth_blockedDomainsStandardLogin = 'Block domains from logging with local accounts';
+$s_plugin_MantisAzureOauth_blockedUsersStandardLogin = 'Block users from logging in with local accounts';
+$s_plugin_MantisAzureOauth_blockedDomainsStandardLogin = 'Block domains from logging in with local accounts';
 $s_plugin_MantisAzureOauth_save = 'Save';
 
 $s_plugin_MantisAzureOauth_passwordManagedElsewhereMessage = 'You cannot manage a password for an external account';
