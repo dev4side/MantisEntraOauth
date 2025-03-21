@@ -15,9 +15,9 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 			'MantisCore' => '2.0.0',
 		);
 
-		$this->author  = 'Ugleiton';
-		$this->contact = 'ugletion@gmail.com';
-		$this->url     = 'https://github.com/ugleiton/MantisAzureOauth';
+		$this->author  = 'Ugleiton, Dev4Side Software Team';
+		$this->contact = 'ugletion@gmail.com, info@dev4side.com';
+		$this->url     = 'https://github.com/dev4side/MantisEntraOauth';
 	}
 
 
