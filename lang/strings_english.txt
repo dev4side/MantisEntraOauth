@@ -12,3 +12,10 @@ $s_plugin_MantisAzureOauth_save = 'Save';
 $s_plugin_MantisAzureOauth_passwordManagedElsewhereMessage = 'You cannot manage a password for an external account';
 
 $s_plugin_MantisAzureOauth_microsoftLoginText = 'Login with Microsoft';
+
+$s_plugin_MantisAzureOauth_redirectLoginErrorEmail = 'Unable to retrieve email for login. Please try again.';
+$s_plugin_MantisAzureOauth_redirectLoginErrorDetails = 'Error processing authentication: ';
+$s_plugin_MantisAzureOauth_redirectLoginErrorUnregisteredEmail = 'Email address is not registered. Please register a new account first. Detected email address:';
+$s_plugin_MantisAzureOauth_redirectLoginErrorAccountDisabled = 'Account disabled for the email: ';
+$s_plugin_MantisAzureOauth_redirectLoginErrorTooManyAttempts = 'Too many login attempts for the email: ';
+$s_plugin_MantisAzureOauth_redirectLoginErrorAnonymousAccess = 'Anonymous account not allowed for login:';
