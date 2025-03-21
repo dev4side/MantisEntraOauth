@@ -28,7 +28,7 @@ class MantisAzureOauthPlugin extends MantisPlugin {
             'clientId' => '',
             'clientSecret' => '',
             'redirectUri' => '',
-			'allowedUsersStandardLogin' => 'Administrator',
+			'blockedUsersStandardLogin' => '',
 			'blockedDomainsStandardLogin' => '',
         );
     }
@@ -53,10 +53,10 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 			$p_username = $p_args['username'];
 
 		    // Get list of users allowed to use standard login
-			$allowed_users = plugin_config_get('allowedUsersStandardLogin', '');
+			$blocked_users = plugin_config_get('blockedUsersStandardLogin', '');
 			$blocked_domains = plugin_config_get('blockedDomainsStandardLogin', ''); 
 			
-			$allowed_users_array = array_map('trim', explode(',', $allowed_users));
+			$blocked_users_array = array_map('trim', explode(',', $blocked_users));
 			$blocked_domains_array = array_map('trim', explode(',', $blocked_domains));
 			
 			$t_flags = new AuthFlags();
@@ -80,9 +80,9 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 				}
 			}
 			
-			// If we have restrictions and user is not on allowed list, block standard login
-			// TODO: might accidentally block all users except from IdP 
-			if (!empty($allowed_users) && !in_array($p_username, $allowed_users_array)) {
+			// NEW LOGIC (lets people in locally by default)
+			// This is coherent with the domain blocking logic above
+			if (!empty($blocked_users) && in_array($p_username, $blocked_users_array)) {
 				$t_flags->setCanUseStandardLogin( false );
 			}
 			
