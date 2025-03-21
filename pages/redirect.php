@@ -35,7 +35,7 @@ try {
     // Process the user login
     process_login($email);
 } catch (Exception $e) {
-    echo 'plugin_lang_get('redirectLoginErrorDetails')' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    echo plugin_lang_get('redirectLoginErrorDetails') . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
     exit;
 }
 
