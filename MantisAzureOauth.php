@@ -21,7 +21,7 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 	}
 
 
-    // Define as configurações padrão do plugin
+	// Define the default settings for the plugin
     function config() {
         return array(
             'tenantId' => '',
@@ -40,7 +40,7 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 		$this->current_page = basename( $_SERVER['PHP_SELF'] );
 	}
 
-    // Hook para adicionar o botão de login ao menu principal do MantisBT
+	// Hook to add the login button to the main menu of MantisBT
     function hooks() {
         return array(
             'EVENT_LAYOUT_RESOURCES' => 'add_azure_login_button',
