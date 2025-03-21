@@ -85,11 +85,13 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 			if (!empty($blocked_users) && in_array($p_username, $blocked_users_array)) {
 				$t_flags->setCanUseStandardLogin( false );
 			}
+
+			//TODO: Add option to use B2C capabilities
 			
 			return $t_flags;
 	}
 
-    // Adiciona o botão de login com Azure no menu principal
+	// Adds the Azure login button to the main menu
     function add_azure_login_button() {
         //return array('<a href="' . plugin_page("auth") . '">Login with Azure</a>');
 		if ( ! in_array( $this->current_page, $this->cmv_pages ) ) {
