@@ -15,20 +15,20 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 			'MantisCore' => '2.0.0',
 		);
 
-		$this->author  = 'Ugleiton';
-		$this->contact = 'ugletion@gmail.com';
-		$this->url     = 'https://github.com/ugleiton/MantisAzureOauth';
+		$this->author  = 'Ugleiton, Dev4Side Software Team';
+		$this->contact = 'ugletion@gmail.com, info@dev4side.com';
+		$this->url     = 'https://github.com/dev4side/MantisEntraOauth';
 	}
 
 
-    // Define as configurações padrão do plugin
+	// Define the default settings for the plugin
     function config() {
         return array(
             'tenantId' => '',
             'clientId' => '',
             'clientSecret' => '',
             'redirectUri' => '',
-			'allowedUsersStandardLogin' => 'Administrator',
+			'blockedUsersStandardLogin' => '',
 			'blockedDomainsStandardLogin' => '',
         );
     }
@@ -40,7 +40,7 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 		$this->current_page = basename( $_SERVER['PHP_SELF'] );
 	}
 
-    // Hook para adicionar o botão de login ao menu principal do MantisBT
+	// Hook to add the login button to the main menu of MantisBT
     function hooks() {
         return array(
             'EVENT_LAYOUT_RESOURCES' => 'add_azure_login_button',
@@ -53,10 +53,10 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 			$p_username = $p_args['username'];
 
 		    // Get list of users allowed to use standard login
-			$allowed_users = plugin_config_get('allowedUsersStandardLogin', '');
+			$blocked_users = plugin_config_get('blockedUsersStandardLogin', '');
 			$blocked_domains = plugin_config_get('blockedDomainsStandardLogin', ''); 
 			
-			$allowed_users_array = array_map('trim', explode(',', $allowed_users));
+			$blocked_users_array = array_map('trim', explode(',', $blocked_users));
 			$blocked_domains_array = array_map('trim', explode(',', $blocked_domains));
 			
 			$t_flags = new AuthFlags();
@@ -75,21 +75,23 @@ class MantisAzureOauthPlugin extends MantisPlugin {
 
 					# Enable re-authentication and use more aggressive timeout.
 					$t_flags->setReauthenticationEnabled( true );
-					$t_flags->setReauthenticationLifetime( 10 );
+					$t_flags->setReauthenticationLifetime( 3600 );
 					return $t_flags;
 				}
 			}
 			
-			// If we have restrictions and user is not on allowed list, block standard login
-			// TODO: might accidentally block all users except from IdP 
-			if (!empty($allowed_users) && !in_array($p_username, $allowed_users_array)) {
+			// NEW LOGIC (lets people in locally by default)
+			// This is coherent with the domain blocking logic above
+			if (!empty($blocked_users) && in_array($p_username, $blocked_users_array)) {
 				$t_flags->setCanUseStandardLogin( false );
 			}
+
+			//TODO: Add option to use B2C capabilities
 			
 			return $t_flags;
 	}
 
-    // Adiciona o botão de login com Azure no menu principal
+	// Adds the Azure login button to the main menu
     function add_azure_login_button() {
         //return array('<a href="' . plugin_page("auth") . '">Login with Azure</a>');
 		if ( ! in_array( $this->current_page, $this->cmv_pages ) ) {

@@ -1,4 +1,4 @@
-# MantisBT Azure SSO Authentication Plugin
+# MantisBT Entra ID (Azure AD SSO) Authentication Plugin
 
 This plugin allows user authentication in MantisBT using Microsoft Azure Active Directory (Azure AD) as the identity provider. With it, users can log in using their Azure AD credentials.
 
@@ -73,31 +73,13 @@ https://${your_mantis_url}/plugin.php?page=MantisAzureOauth/redirect
    - Fill in the fields with the information 
 
 6. **Block default access**
-   - If you want to prevent login using the default method, fill in the field `Users allowed on standard login` in the settings with the user names separated by comma, only these users will be able to log in outside of SSO.
-   - Manually adjust the file `core/authentication_api.php` adjusting the `auth_attempt_login` function in the following format:
-   ```php
-      function auth_attempt_login( $p_username, $p_password, $p_perm_login = false ) {
-
-         // Customization UGLEITON - Validate if the user can do standard login 
-         $t_basename = 'MantisAzureOauth';
-         $allowed_users = config_get('plugin_' . $t_basename . '_allowedUsersStandardLogin', '');
-         // Check if it's standard login and the list is not empty
-         if ( !empty( $allowed_users ) ) {
-            $allowed_users_array = array_map( 'trim', explode( ',', $allowed_users ) ); 
-            // Check if the user is in the allowed list
-            if ( !in_array( $p_username, $allowed_users_array ) ) {
-                  // Prevents login if the user is not allowed
-               return false;
-            }
-         }
-      // CONTINUATION OF STANDARD CODE....
-
-   ``` 
-
+   - If you want to prevent login using the default method, fill in the field `Block users from logging in with local accounts` in the settings with the user names separated by comma, only these users will not be able to login using their local credentials.
+   - Same thing goes for domains: fill `Block domains from logging in with local accounts` with the details.
 
 ## Login Process
 
 When a user accesses the login page and clicks on `Microsoft Login`, the plugin redirects them to the Azure login page, where they must authenticate. After successful login, the user will be redirected back to MantisBT.
+The authentication logic is handled inside the `check_authentication()` function and uses hooks to modify user auth flags during login; this allows safe updates to the MantisBT instance without losing modifications.
 
 ### Note:
 
@@ -108,6 +90,7 @@ If automatic user registration is not enabled, the administrator will need to ma
 This plugin was developed based on ideas and implementations from other authentication integration projects in MantisBT. In particular, the following were used as references:
 
 - [MantisOIDC](https://github.com/FSD-Christian-ADM/MantisOIDC)
-- [GoogleOauth Plugin for MantisBT](https://github.com/mantisbt-plugins/GoogleOauth) 
+- [GoogleOauth Plugin for MantisBT](https://github.com/mantisbt-plugins/GoogleOauth)
+- [ugleiton](https://github.com/ugleiton) for the original implementation
 
 I thank the developers of these projects for sharing their solutions with the community.

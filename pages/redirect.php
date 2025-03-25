@@ -3,14 +3,14 @@ require_once 'assets/lib/OpenID-Connect-PHP/vendor/autoload.php';
 
 use Jumbojett\OpenIDConnectClient;
 
-// Configurações da aplicação
+// Application settings
 $tenantId = plugin_config_get('tenantId');
 $clientId = plugin_config_get('clientId');
 $clientSecret = plugin_config_get('clientSecret');
 $redirectUri = plugin_config_get('redirectUri');
 
 try {
-    // Inicializa o cliente OpenID Connect
+    // Initialize the OpenID Connect client
     $oidc = new OpenIDConnectClient(
         "https://login.microsoftonline.com/$tenantId/v2.0",
         $clientId,
@@ -20,27 +20,27 @@ try {
     $oidc->setRedirectURL($redirectUri);
     $oidc->addScope(['openid', 'profile', 'User.Read', 'email']);
 
-    // Autentica e processa o login
+    // Authenticate and process the login
     $oidc->authenticate();
     $accessToken = $oidc->getAccessToken();
 
-    // Tenta extrair o email diretamente da UserInfo ou do token JWT ou da API Graph
+    // Attempts to extract the email directly from UserInfo, the JWT token, or the Graph API
     $email = $oidc->requestUserInfo('email') 
         ?? extract_email_from_token($accessToken) 
         ?? fetch_email_from_graph($accessToken);
     if (!$email) {
-        display_error_and_exit("Não foi possível obter email para login. Tente novamente.");
+        display_error_and_exit(plugin_lang_get('redirectLoginErrorEmail'));
     }
 
-    // Processa o login do usuário
+    // Process the user login
     process_login($email);
 } catch (Exception $e) {
-    echo 'Erro ao processar autenticação: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    echo plugin_lang_get('redirectLoginErrorDetails') . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
     exit;
 }
 
 /**
- * Extrai o email do payload do token JWT
+ * Extracts the email from the JWT token payload
  */
 function extract_email_from_token($accessToken) {
     $jwt_payload = base64_decode($accessToken);
@@ -57,7 +57,7 @@ function extract_email_from_token($accessToken) {
 }
 
 /**
- * Busca o email do usuário via Microsoft Graph API
+ * Fetches the user's email via Microsoft Graph API
  */
 function fetch_email_from_graph($accessToken) {
     $ch = curl_init();
@@ -80,19 +80,19 @@ function fetch_email_from_graph($accessToken) {
 
 
 /**
- * Normaliza o formato de e-mail retornado pela API Graph
+ * Normalizes the email format returned by the Graph API for guest users
  */
 function normalize_email_format($email) {
     if (strpos($email, '#EXT#') !== false) {
         $parts = explode('#', $email);
-        $local_part = str_replace('_', '@', $parts[0]); // Substitui "_" por "."
+        $local_part = str_replace('_', '@', $parts[0]); // Substitute "_" with "."
         return $local_part;
     }
-    return $email; // Retorna o e-mail sem alterações, se já estiver correto
+    return $email; // Returns the email without changes if it is already correct
 }
 
 /**
- * Processa o login do usuário no MantisBT
+ * Processes the user login in MantisBT
  */
 function process_login($email) {
     $user_id = user_get_id_by_email($email);
@@ -112,32 +112,32 @@ function process_login($email) {
 }
 
 /**
- * Valida o usuário antes de permitir o login
+ * Validates the user before allowing login
  */
 function user_id_valid($user_id, $email) {
     if (!$user_id) {
-        display_error_and_exit("Email address: '$email' não está registrado. Registre uma nova conta primeiro.");
+        display_error_and_exit(plugin_lang_get('redirectLoginErrorEmail') . $email);
     }
 
     if (!user_is_enabled($user_id)) {
-        display_error_and_exit("Conta desativada para o email: '$email'.");
+        display_error_and_exit(plugin_lang_get('redirectLoginErrorAccountDisabled') . $email);
     }
 
     if (!user_is_login_request_allowed($user_id)) {
-        display_error_and_exit("Muitas tentativas de login para o email: '$email'.");
+        display_error_and_exit(plugin_lang_get('redirectLoginErrorTooManyAttempts') . $email);
     }
 
     if (user_is_anonymous($user_id)) {
-        display_error_and_exit("Conta anônima não permitida para login: '$email'.");
+        display_error_and_exit(plugin_lang_get('redirectLoginErrorAnonymousAccess') . $email);
     }
 
     return true;
 }
 
 /**
- * Exibe uma mensagem de erro e encerra o script
+ * Displays an error message and terminates the script
  */
 function display_error_and_exit($message) {
-    echo "<p>$message<br/><a href='/login_page.php'>Login</a>";
+    echo "<p>" . htmlspecialchars($message) . "<br/><a href='/login_page.php'>Login</a>";
     exit;
 }
